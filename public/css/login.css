@@ -1,0 +1,164 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: #F0FCF6;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    max-width: 900px;
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.left-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* Mengatur elemen dalam satu kolom */
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Biar teks di tengah */
+}
+
+.left-side img {
+    width: 50%;
+    max-width: 300px;
+    margin-bottom: 10px; /* Jarak antara gambar dan teks */
+}
+
+.logo-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333; /* Warna teks, sesuaikan dengan desain */
+}
+
+
+.right-side {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.login-container {
+    background-color: #D5F8E4;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-container h2 {
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 24px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #444;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #5BE4A8;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(91, 228, 168, 0.5);
+}
+
+/* Membuat tombol login berada di tengah */
+.login-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.input-group input[type="submit"] {
+    background-color: #A5D9C7;
+    color: black;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    font-size: 14px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.input-group input[type="submit"]:hover {
+    background-color: #5BE4A8;
+    transform: scale(1.05);
+}
+
+.dashboard-btn {
+    background-color: #4CAF50; /* Warna hijau */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    width: auto;
+}
+
+.dashboard-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .left-side {
+        margin-bottom: 20px;
+    }
+
+    .left-side img {
+        max-width: 200px;
+    }
+
+    .login-container {
+        max-width: 90%;
+        padding: 30px;
+    }
+}

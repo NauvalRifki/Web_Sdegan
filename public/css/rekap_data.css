@@ -1,0 +1,535 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #F0FCF6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    transition: margin-left 0.3s ease; /* Animasi transisi */
+    margin-left: 170px; /* Sesuaikan dengan lebar sidebar */
+}
+
+/* Saat sidebar disembunyikan */
+.sidebar-hidden .container {
+    margin-left: 0;
+}
+
+.container.shifted {
+    margin-left: 20px; /* Menggeser ke kiri */
+}
+
+.navbar {
+    background: linear-gradient(180deg, #D5F8E4 0%, #A5D9C7 100%); /* Gradien warna */
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 170px;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.1); /* Efek bayangan di sisi kanan */
+}
+
+.navbar.hidden {
+    transform: translateX(-100%);
+}
+
+.navbar::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -10px;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.1) 10%, transparent 80%);
+    border-radius: 50%;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 5px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #7cc5a1; /* Garis pemisah */
+}
+
+.logo img {
+    max-width: 100px; /* Sesuaikan ukuran logo */
+    display: block;
+    margin: 0 auto;
+}
+
+.logo-text {
+    font-size: 12px;
+    font-weight: bold;
+    color: #333; /* Warna teks */
+    margin-top: 10px; /* Jarak antara logo dan teks */
+}
+.navbar img {
+    max-height: 80px; /* Mengurangi ukuran logo */
+    max-width: 100%; /* Ensure the logo is responsive */
+    object-fit: contain;
+}
+
+.navbar a {
+    color: #5b5b5b;
+    padding: 10px 18px;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+    border-radius: 5px;
+    margin: 10px 0;
+    background-color: #A5D9C7;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Efek dekoratif ikon */
+.navbar a::before {
+    content: "★"; /* Bisa ganti dengan ikon lain */
+    font-size: 10px;
+    color: #ffffff;
+    position: absolute;
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.navbar a:hover::before {
+    opacity: 1;
+    transform: translateY(-50%) rotate(20deg);
+}
+
+/* Hiasan bawah sidebar */
+.navbar::after {
+    content: "✨ DKPP Kota Kediri ✨";
+    position: absolute;
+    bottom: 20px;
+    font-size: 12px;
+    color: #5b5b5b;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    opacity: 0.8;
+    margin-bottom: 20px;
+}
+.navbar a:hover {
+    background-color: #89c4af;
+    color: #ffffff;
+    transform: translateX(10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.navbar a:active {
+    background-color: #7cc5a1; /* Darker shade when clicked */
+    transform: translateX(5px); /* Slight slide effect on click */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Efek bayangan lebih intens saat tombol ditekan */
+}
+
+.navbar a + a {
+    border-top: 1px solid #ccc; /* Optional separator between buttons */
+}
+
+/* Tombol untuk Hide/Show Sidebar (Panah) */
+.toggle-btn {
+    position: absolute;
+    top: 10px;
+    right: -20px; /* Tempatkan di atas kanan sidebar */
+    background-color: #5BE4A8;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1100;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Tombol Panah ke Kiri ketika Sidebar tersembunyi */
+.toggle-btn.hide {
+    transform: rotate(180deg); /* Putar panah 180 derajat */
+}
+
+.datetime {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #222;
+
+    background: #ffffff;
+    padding: 10px 12px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+    width: 150px;  /* lebih compact */
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.datetime::before {
+    content: "";
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 60px;
+    height: 60px;
+    background: rgba(165, 217, 199, 0.3); /* dekorasi lingkaran */
+    border-radius: 50%;
+}
+
+.datetime:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Hari dan tanggal */
+.datetime span {
+    font-size: 11px;  /* lebih compact */
+    color: #555;
+    font-weight: 500;
+}
+
+/* Garis tipis dekorasi */
+.datetime hr {
+    border: none;
+    border-top: 1px dashed #ccc;
+    margin: 4px 0;
+    width: 100%;
+}
+
+.datetime-op {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #222;
+
+    background: #ffffff;
+    padding: 10px 12px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+    width: 150px;  /* lebih compact */
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.datetime-op::before {
+    content: "";
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 60px;
+    height: 60px;
+    background: rgba(165, 217, 199, 0.3); /* dekorasi lingkaran */
+    border-radius: 50%;
+}
+
+.datetime-op:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Hari dan tanggal */
+.datetime-op span {
+    font-size: 11px;  /* lebih compact */
+    color: #555;
+    font-weight: 500;
+}
+
+/* Garis tipis dekorasi */
+.datetime-op hr {
+    border: none;
+    border-top: 1px dashed #ccc;
+    margin: 4px 0;
+    width: 100%;
+}
+
+.header-text {
+    margin-bottom: 8px;
+    text-align: center;
+    font-weight: 700; /* tebal */
+    font-size: 16px;  /* ukuran pas untuk header */
+    font-family: 'Poppins', Arial, sans-serif; /* modern dan clean */
+    color: #111312; /* abu gelap elegan */
+    letter-spacing: 0.5px; /* agak renggang biar rapi */
+    text-transform: uppercase; /* bikin judul lebih tegas */
+}
+
+.header-text::after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: #89c4af; /* warna hijau khas websitemu */
+    margin: 5px auto 0;
+    border-radius: 2px;
+}
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the start */
+    position: relative;
+    z-index: 1;
+    overflow: auto;
+    padding: 20px; /* Optional padding for better content spacing */
+}
+
+.btn-excel {
+    background-color: #025217; /* Warna hijau gelap */
+    padding: 10px 10px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+    color: white;
+    position: absolute;
+    top: 5px;
+    left: 20px;
+    margin-left: 20px;
+}
+
+.btn-excel:hover {
+    background-color: #01360f;
+}
+
+.btn-success {
+    background-color: #025217; /* Warna hijau gelap */
+    padding: 10px 10px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+    color: white;
+    position: absolute;
+    top: 5px;
+    left: 20px;
+    margin-left: 150px;
+}
+
+.btn-success:hover {
+    background-color: #01360f;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 16px;
+    margin-top: -5px;
+}
+
+.rekap-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    max-height: 2500px; /* Batasi tinggi agar scroll hanya di dalam */
+    overflow-y: auto;
+    width: 100%; /* Pastikan tidak melebihi layar */
+    box-sizing: border-box; /* Agar padding tidak menambah ukuran */
+    margin-top: 10px;
+}
+
+/* Kontainer tabel */
+.table-container {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 97%; /* Pastikan tabel tidak lebih lebar dari layar */
+}
+
+/* Bungkus tabel untuk scroll */
+.table-wrapper {
+    max-height: 1000px; /* Batasi tinggi tabel */
+    overflow-y: auto; /* Scroll hanya di dalam tabel */
+    overflow-x: auto; /* Scroll horizontal hanya jika tabel melebihi layar */
+    position: relative;
+    width: 100%;
+}
+
+/* Tabel */
+.data-table {
+    width: 100%; /* Pastikan tabel tetap dalam container */
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+/* Buat header tetap di atas saat scroll */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #A5D9C7;
+    z-index: 2;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling border & teks */
+.data-table th, .data-table td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+/* Warna baris */
+.data-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Tambahkan animasi untuk fade in dan slide in */
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-100px); }
+    to { transform: translateY(0); }
+}
+
+/* Animasi fade-out dan slide-out */
+@keyframes modalFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes modalSlideOut {
+    from { transform: translateY(0); }
+    to { transform: translateY(-100px); }
+}
+
+/* Saat modal sedang dalam proses penutupan, gunakan animasi ini */
+.modal.hide .modal-content {
+    animation: modalFadeOut 0.3s ease, modalSlideOut 0.3s ease;
+    opacity: 0;
+    transform: translateY(-100px);
+}
+
+/* Animasi saat modal ditampilkan */
+.modal.show .modal-content {
+    animation: modalFadeIn 0.3s ease, modalSlideIn 0.3s ease;
+}
+
+/* Modal container */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
+
+/* Modal content box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+    transform: translateY(-100px);
+    opacity: 0;
+}
+
+/* Saat modal ditampilkan, ubah opacity dan posisi */
+.modal.show .modal-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Close button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Logout button */
+.btn-logout {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #d9534f;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.btn-logout:hover {
+    background-color: #c9302c;
+}
+
+/* Profile details */
+.profile-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Ubah align-items dari center ke flex-start */
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-logo {
+    flex-shrink: 0;
+    margin-left: 20px;
+    margin-right: 20px;
+    align-self: flex-start; /* Tambahkan align-self untuk memposisikan gambar lebih ke atas */
+}
+
+.profile-logo img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+}
