@@ -619,30 +619,23 @@
                         myChart.data.datasets[1].data = het;
                         myChart.update();
 
-                        let consecutive = 0;
-                        let foundAlert = false;
+                        // 🔥 Cek apakah 7 hari terakhir semuanya status intervensi
+                        if (data.length >= 7) {
+                            const last7Days = data.slice(-7); // ambil 7 data terakhir
+                            const allIntervensi = last7Days.every(item => 
+                                parseFloat(item.price) >= parseFloat(item.harga_intervensi)
+                            );
 
-                        for (let i = 0; i < data.length; i++) {
-                            if (data[i].price >= data[i].harga_intervensi) {
-                                consecutive++;
-                                if (consecutive >= 4) {
-                                    foundAlert = true;
-                                    break;
-                                }
-                            } else {
-                                consecutive = 0;
+                            if (allIntervensi) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: `⚠️ Komoditas ${commodity}`,
+                                    text: 'Harga sudah 7 hari berturut-turut berstatus INTERVENSI!',
+                                    timer: 5000,
+                                    timerProgressBar: true,
+                                    showConfirmButton: false
+                                });
                             }
-                        }
-
-                        if (foundAlert) {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: `⚠️ Komoditas ${commodity}`,
-                                text: 'Harga sudah 4 hari berturut-turut berstatus INTERVENSI!',
-                                timer: 3000,
-                                timerProgressBar: true,
-                                showConfirmButton: false
-                            });
                         }
                     })
                     .catch(err => console.error('Gagal load chart:', err));
@@ -722,7 +715,7 @@
                     })
                     .catch(err => console.error('Gagal load chart all:', err));
             }
-
+             
             // Inisialisasi awal
             initializeChart();
             initializeChartAll();
