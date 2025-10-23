@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\sumber_data;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SumberDataController extends Controller
 {
@@ -122,26 +124,31 @@ class SumberDataController extends Controller
         return redirect()->route('SumberData.index')->with('success', 'Data komoditas berhasil diperbarui!');
     }    
 
-    public function destroy(string $id) {
-        $data = sumber_data::findOrFail($id);
-        $nama_kolom = str_replace(' ', '_', $data->nama_komoditas);
+    public function destroy(string $id){
+            $data = sumber_data::findOrFail($id);
+            $nama_kolom = $data->nama_komoditas;
 
-        // Hapus kolom dari rekap
-        if (Schema::hasColumn('rekap', $nama_kolom)) {
-            Schema::table('rekap', function (Blueprint $table) use ($nama_kolom) {
-                $table->dropColumn($nama_kolom);
-            });
-        }
+            try {
+                if (Schema::hasColumn('rekap', $nama_kolom)) {
+                    DB::statement("ALTER TABLE `rekap` DROP COLUMN `$nama_kolom`");
+                }
+            } catch (\Throwable $e) {
+                Log::error("Gagal menghapus kolom $nama_kolom dari rekap: " . $e->getMessage());
+                return back()->with('error', "Gagal menghapus kolom $nama_kolom dari rekap: " . $e->getMessage());
+            }
 
-        // Hapus kolom dari het
-        if (Schema::hasColumn('het', $nama_kolom)) {
-            Schema::table('het', function (Blueprint $table) use ($nama_kolom) {
-                $table->dropColumn($nama_kolom);
-            });
-        }
+            try {
+                if (Schema::hasColumn('het', $nama_kolom)) {
+                    DB::statement("ALTER TABLE `het` DROP COLUMN `$nama_kolom`");
+                }
+            } catch (\Throwable $e) {
+                Log::error("Gagal menghapus kolom $nama_kolom dari het: " . $e->getMessage());
+                return back()->with('error', "Gagal menghapus kolom $nama_kolom dari het: " . $e->getMessage());
+            }
 
-        $data->delete();
+            $data->delete();
 
-        return redirect()->route('SumberData.index')->with('success', 'Data komoditas dan kolom terkait berhasil dihapus!');
+            return redirect()->route('SumberData.index')
+                ->with('success', "Data '$nama_kolom' dan kolom terkait berhasil dihapus!");
     }
 }
