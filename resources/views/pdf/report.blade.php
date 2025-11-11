@@ -249,12 +249,17 @@
                         @php
                             $statusClass = '';
                             $statusText = 'Aman'; // Default status
-
-                            // Pastikan harga_hari_ini dan harga_waspada/intervensi ada
-                            $currentPrice = $row->harga_hari_ini;
+                    
+                            // Gunakan rata-rata 7 hari untuk indikator 7 hari
+                            $currentPrice = $row->harga_rata_rata_7_hari;
                             $waspadaPrice = $row->harga_waspada ?? null;
                             $intervensiPrice = $row->harga_intervensi ?? null;
-
+                    
+                            // Pastikan semua harga bertipe numerik
+                            $currentPrice = (float) $currentPrice;
+                            $waspadaPrice = (float) $waspadaPrice;
+                            $intervensiPrice = (float) $intervensiPrice;
+                    
                             if ($intervensiPrice !== null && $currentPrice >= $intervensiPrice) {
                                 $statusClass = 'indicator-intervensi';
                                 $statusText = 'Intervensi';
