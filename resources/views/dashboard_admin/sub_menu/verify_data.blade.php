@@ -6,6 +6,7 @@
     <title>Verify Data</title>
     <link rel="stylesheet" href="{{ asset('css/verify_data_a.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
@@ -89,7 +90,7 @@
                         </table>
                     </div>
                     <div class="button-container">
-                        <button type="submit" name="action" value="save" class="btn btn-add">
+                        <button type="button" id="btnSave" class="btn btn-add">
                             <i class="fas fa-save"></i> Simpan
                         </button>
                     </div>
@@ -206,6 +207,31 @@
                 select.value = status;
             });
         }
+    </script>
+    <script>
+        document.getElementById('btnSave').addEventListener('click', function(event) {
+            Swal.fire({
+                title: 'Konfirmasi Simpan',
+                text: 'Pastikan semua data sudah benar. Apakah Anda yakin ingin menyimpan?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Simpan',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // jika user klik "Ya, Simpan"
+                    document.getElementById('saveForm').submit();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // user klik Batal atau tutup dialog
+                    Swal.fire(
+                        'Dibatalkan',
+                        'Data belum disimpan.',
+                        'info'
+                    );
+                }
+            });
+        });
     </script>
 </body>
 </html>

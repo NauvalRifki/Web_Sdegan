@@ -102,17 +102,23 @@
         </div>
     </div>
 
-    <!-- Modal -->
-   <div id="profileModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Profil User</h2>
-        <p>Nama: {{ Auth::user()->nama }}</p>
-        <p>Role: {{ Auth::user()->role }}</p>
-        <p>Email: {{ Auth::user()->email }}</p>
-        <a href="/logout" class="btn-logout">Logout</a>
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Profil User</h2>
+            <div class="profile-details">
+                <div class="profile-info">
+                    <p>Nama: {{ Auth::user()->nama }}</p>
+                    <p>Role: {{ Auth::user()->role }}</p>
+                    <p>Email: {{ Auth::user()->email }}</p>
+                    <a href="#" class="btn-logout" onclick="handleLogout()">Logout</a>
+                </div>
+                <div class="profile-logo">
+                    <img src="{{ asset('images/profileLogo.png') }}" alt="Profile Logo" />
+                </div>
+            </div>
+        </div>
     </div>
- </div>
 
     <script>
         // Ambil elemen tombol toggle dan navbar

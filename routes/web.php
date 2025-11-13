@@ -22,6 +22,9 @@ Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/forgot-password', [AuthController::class, 'showForgotForm'])->name('forgot.password');
+Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('forgot.password.post');
+
 //api dashboard
 Route::get('/api/komoditas', [DashboardController::class, 'getKomoditas']);
 Route::get('/api/filter', [DashboardController::class, 'filter']);

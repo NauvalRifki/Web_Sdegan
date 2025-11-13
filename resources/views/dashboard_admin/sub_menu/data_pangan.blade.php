@@ -6,6 +6,7 @@
     <title>Data Pangan</title>
     <link rel="stylesheet" href="{{ asset ('css/data_pangan.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body> 
     <div class="container">
@@ -43,7 +44,7 @@
                 </a>
             </div>          
         
-        <form action="{{ route('dashboard_admin.sub_menu.data.bulkDelete') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data yang dipilih?')">
+        <form id="bulkDeleteForm" action="{{ route('dashboard_admin.sub_menu.data.bulkDelete') }}" method="POST">
             @csrf
             <div class="table-container">
                 <table id="entryDataTable" class="table table-bordered">
@@ -101,45 +102,18 @@
                     </tbody>                    
                 </table>
             </div>  
-            <div class="bulk-action-container">
-                <button type="submit" class="btn-bulk-delete">
-                    <i class="fas fa-trash"></i> Hapus Data
-                </button>
-            </div>
-                
-            <!-- Flash message alert -->
-            @if(session('success'))
-                <div id="alert-success" class="alert alert-success">
-                    {{ session('success') }}
+                <div class="bulk-action-container">
+                    <button type="button" id="btnBulkDelete" class="btn-bulk-delete">
+                        <i class="fas fa-trash"></i> Hapus Data
+                    </button>
                 </div>
-                @endif
-
-                @if(session('error'))
-                    <div id="alert-error" class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
             </div>
         </form>
 
-        <!-- The Modalimport -->
-        <div id="importDataModal" class="modal">
-            <!-- Modal content -->
+        <!-- Modal -->
+        <div id="profileModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2>Import Data</h2>
-                <form action="importexcel" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <input type="file" name="file". required>
-                    <button type="submit" class="btn-import">Upload</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal -->
-        <div id="profileModal" class="modalp">
-            <div class="modalp-content">
-                <span class="closep">&times;</span>
                 <h2>Profil User</h2>
                 <div class="profile-details">
                     <div class="profile-info">
@@ -170,18 +144,7 @@
             container.classList.toggle("shifted"); // Menggeser container
             layoutContainer.classList.toggle("shifted");
         });
-        </script>
-    
-    <script>
-        // Fungsi untuk konfirmasi delete
-        function confirmDelete(event) {
-            event.preventDefault(); // Mencegah form submit secara otomatis
-            const confirmed = confirm("Apakah Anda yakin ingin menghapus data ini?");
-            if (confirmed) {
-                event.target.submit(); // Submit form jika pengguna mengkonfirmasi
-            }
-        }
-    </script>    
+    </script>   
     <script>
         // Ambil elemen modal profil
         var profileModal = document.getElementById("profileModal");
@@ -190,7 +153,7 @@
         var profileBtn = document.getElementById("profile-link");
     
         // Ambil elemen <span> yang menutup modal profil
-        var profileSpan = document.getElementsByClassName("closep")[0];
+        var profileSpan = document.getElementsByClassName("close")[0];
     
         // Ketika pengguna mengklik link profil, buka modal
         profileBtn.onclick = function() {
@@ -290,7 +253,6 @@
         setInterval(updateDateTime, 1000);
         updateDateTime(); // Panggil sekali saat halaman dimuat
     </script>
-
     <script>
         // Update status dari localStorage ke kolom Status di Data Pangan
         document.querySelectorAll('tr').forEach(function(row, index) {
@@ -311,6 +273,48 @@
             document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = source.checked);
         }
     </script>
+    <script>
+        document.getElementById('btnBulkDelete').addEventListener('click', function() {
+            const checked = document.querySelectorAll('input[name="ids[]"]:checked');
+            
+            if(checked.length === 0){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Pilih data',
+                    text: 'Silakan pilih data yang ingin dihapus.',
+                    toast: true,
+                    position: 'top-end',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                return;
+            }
 
+            Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: `Anda akan menghapus ${checked.length} data ??`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // submit form POST ke route bulkDelete
+                    document.getElementById('bulkDeleteForm').submit();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Dibatalkan',
+                        text: 'Data tidak dihapus.',
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
