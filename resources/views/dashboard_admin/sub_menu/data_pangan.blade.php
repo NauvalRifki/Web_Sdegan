@@ -129,6 +129,28 @@
             </div>
         </div>
 
+        @if (session('success'))
+        <script>
+            Swal.fire({
+                title: "Berhasil!",
+                text: "{{ session('success') }}",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        </script>
+        @endif
+
+        @if (session('error'))
+        <script>
+            Swal.fire({
+                title: "Gagal!",
+                text: "{{ session('error') }}",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        </script>
+        @endif
+
     <script>
         // Ambil elemen tombol toggle dan navbar
         const toggleBtn = document.querySelector('.toggle-btn');

@@ -238,7 +238,33 @@ class VerifikatorController extends Controller
     
         return redirect()->route('dashboard_verifikator.verify_data')
             ->with('success', 'Data berhasil disimpan!');
-    }    
+    }      
+
+    public function updateStatusVerifikasiVer(Request $request, $id){
+        $validated = $request->validate([
+            'status_verifikasi' => 'required|in:Valid,Tidak Valid,Belum Diverifikasi',
+        ]);
+    
+        $dataKomoditas = Data::findOrFail($id);
+        $dataKomoditas->status_verifikasi = $request->status_verifikasi;
+        $dataKomoditas->save();
+    
+        return redirect()->route('dashboard_verifikator.verifikasi_data')->with('success', 'Status data berhasil diperbarui!');
+    }   
+
+    public function kembalikanDataVer(Request $request){
+        $dataList = $request->input('data');
+    
+        foreach ($dataList as $data) {
+            $dataKomoditas = Data::find($data['id']);
+            if ($dataKomoditas) {
+                $dataKomoditas->status_verifikasi = $data['status_verifikasi'];
+                $dataKomoditas->save();
+            }
+        }
+    
+        return redirect()->route('dashboard_verifikator.verifikasi_data')->with('success', 'Data berhasil dikembalikan ke Operator!');
+    }  
 
     public function generatePDFveri(Request $request) {
         Log::info('Memulai proses generate PDF', ['input' => $request->all()]);
@@ -362,31 +388,5 @@ class VerifikatorController extends Controller
             ]);
             return back()->with('error', 'Terjadi kesalahan saat membuat laporan: ' . $e->getMessage());
         }
-    }    
-
-    public function updateStatusVerifikasiVer(Request $request, $id){
-        $validated = $request->validate([
-            'status_verifikasi' => 'required|in:Valid,Tidak Valid,Belum Diverifikasi',
-        ]);
-    
-        $dataKomoditas = Data::findOrFail($id);
-        $dataKomoditas->status_verifikasi = $request->status_verifikasi;
-        $dataKomoditas->save();
-    
-        return redirect()->route('dashboard_verifikator.verifikasi_data')->with('success', 'Status data berhasil diperbarui!');
-    }   
-
-    public function kembalikanDataVer(Request $request){
-        $dataList = $request->input('data');
-    
-        foreach ($dataList as $data) {
-            $dataKomoditas = Data::find($data['id']);
-            if ($dataKomoditas) {
-                $dataKomoditas->status_verifikasi = $data['status_verifikasi'];
-                $dataKomoditas->save();
-            }
-        }
-    
-        return redirect()->route('dashboard_verifikator.verifikasi_data')->with('success', 'Data berhasil dikembalikan ke Operator!');
     }  
 }

@@ -45,6 +45,7 @@
                 </div>
                 <form id="saveForm" action="{{ route('dashboard_verifikator.save_data') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="action" id="action">
                     <div class="table-wrapper">
                         <table id="verifyDataTable" class="table table-bordered table-striped">
                             <thead>
@@ -123,15 +124,6 @@
         </div>
     </div>
 
-    <script>
-        function showAlert(action) {
-            if (action === 'return') {
-                alert("Data telah dikembalikan!");
-            } else if (action === 'save') {
-                alert("Data berhasil disimpan dan dikembalikan untuk yang tidak valid");
-            }
-        }
-    </script>
     <script>
         // Ambil elemen modal
         var modal = document.getElementById("profileModal");
@@ -282,22 +274,55 @@
             });
         }
     </script>
-        <script>
-        document.getElementById('btnSave').addEventListener('click', function(event) {
+    <script>
+        document.getElementById('btnSave').addEventListener('click', function() {
+            const selects = document.querySelectorAll('select[name*="[status_verifikasi]"]');
+            let allFilled = true;
+            let validCount = 0;
+            let invalidCount = 0;
+
+            // Cek status verifikasi tiap baris
+            selects.forEach(select => {
+                if (select.value === "") {
+                    allFilled = false;
+                    select.style.border = "2px solid red"; // Tandai yang kosong
+                } else {
+                    select.style.border = ""; // Reset border jika sudah diisi
+                }
+
+                if (select.value === "Valid") validCount++;
+                else if (select.value !== "") invalidCount++;
+            });
+
+            // Jika ada yang belum diisi
+            if (!allFilled) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Status Belum Diisi',
+                    text: 'Harap pilih status verifikasi untuk semua data sebelum menyimpan.',
+                });
+                return; // Stop sampai user isi semua
+            }
+
+            // Konfirmasi sebelum submit
             Swal.fire({
                 title: 'Konfirmasi Simpan',
-                text: 'Pastikan semua data sudah benar. Apakah Anda yakin ingin menyimpan?',
-                icon: 'warning',
+                html: `
+                    <p>Data Valid: ${validCount} akan disimpan ✅</p>
+                    <p>Data Tidak Valid: ${invalidCount} akan dikembalikan ⚠️</p>
+                    <p>Apakah Anda yakin ingin melanjutkan?</p>
+                `,
+                icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, Simpan',
                 cancelButtonText: 'Batal',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // jika user klik "Ya, Simpan"
+                    // Set action hidden input
+                    document.getElementById('action').value = 'save';
                     document.getElementById('saveForm').submit();
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    // user klik Batal atau tutup dialog
                     Swal.fire(
                         'Dibatalkan',
                         'Data belum disimpan.',

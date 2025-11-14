@@ -236,7 +236,7 @@
                     <p>Nama: {{ Auth::user()->nama }}</p>
                     <p>Role: {{ Auth::user()->role }}</p>
                     <p>Email: {{ Auth::user()->email }}</p>
-                    <a href="#" class="btn-logout" onclick="handleLogout()">Logout</a>
+                    <a href="/logout" class="btn-logout" onclick="handleLogout()">Logout</a>
                 </div>
                 <div class="profile-logo">
                     <img src="{{ asset('images/profileLogo.png') }}" alt="Profile Logo" />

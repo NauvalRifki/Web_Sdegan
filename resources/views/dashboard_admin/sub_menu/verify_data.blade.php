@@ -34,6 +34,7 @@
                 </div>
                 <form id="saveForm" action="{{ route('dashboard_admin.sub_menu.save_data') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="action" id="action">
                     <div class="table-wrapper">
                         <table id="verifyDataTable" class="table table-bordered table-striped">
                             <thead>
@@ -209,21 +210,71 @@
         }
     </script>
     <script>
-        document.getElementById('btnSave').addEventListener('click', function(event) {
+        document.getElementById('btnSave').addEventListener('click', function() {
+            const selects = document.querySelectorAll('select[name*="[status_verifikasi]"]');
+            let allFilled = true;
+            let validCount = 0;
+            let invalidCount = 0;
+
+            // Cek status verifikasi tiap baris
+            selects.forEach(select => {
+                if (select.value === "") {
+                    allFilled = false;
+                    select.style.border = "2px solid red"; // Tandai yang kosong
+                } else {
+                    select.style.border = ""; // Reset border jika sudah diisi
+                }
+
+                if (select.value === "Valid") validCount++;
+                else if (select.value !== "") invalidCount++;
+            });
+
+            // Jika ada yang belum diisi
+            if (!allFilled) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Status Belum Diisi',
+                    text: 'Harap pilih status verifikasi untuk semua data sebelum menyimpan.',
+                });
+                return;
+            }
+
+            // Tentukan konten alert dan confirm button text
+            let alertHtml = '';
+            let confirmText = 'Ya, Simpan';
+
+            if (validCount > 0 && invalidCount === 0) {
+                // Semua valid
+                alertHtml = `<p>Data Valid: ${validCount} akan disimpan ✅</p>
+                            <p>Pastikan Data Sudah Benar Benar Valid!!</p>`;
+                confirmText = 'Ya, Simpan';
+            } else if (validCount > 0 && invalidCount > 0) {
+                // Ada valid, ada tidak valid
+                alertHtml = `<p>Data Valid: ${validCount} akan disimpan ✅</p>
+                            <p>Data Tidak Valid: ${invalidCount} akan dikembalikan ⚠️</p>
+                            <p>Data yang tidak valid akan dikembalikan untuk diperbaiki</p>`;
+                confirmText = 'Ya, Simpan';
+            } else if (validCount === 0 && invalidCount > 0) {
+                // Semua tidak valid
+                alertHtml = `<p>Semua data akan dikembalikan untuk diperbaiki!!! ⚠️</p>`;
+                confirmText = 'Ya, Kembalikan';
+            }
+
+            // Konfirmasi sebelum submit
             Swal.fire({
                 title: 'Konfirmasi Simpan',
-                text: 'Pastikan semua data sudah benar. Apakah Anda yakin ingin menyimpan?',
-                icon: 'warning',
+                html: alertHtml,
+                icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'Ya, Simpan',
+                confirmButtonText: confirmText,
                 cancelButtonText: 'Batal',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // jika user klik "Ya, Simpan"
+                    // Set action sesuai kondisi
+                    document.getElementById('action').value = (validCount === 0) ? 'return' : 'save';
                     document.getElementById('saveForm').submit();
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    // user klik Batal atau tutup dialog
                     Swal.fire(
                         'Dibatalkan',
                         'Data belum disimpan.',
