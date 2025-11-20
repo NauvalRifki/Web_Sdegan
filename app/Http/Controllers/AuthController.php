@@ -14,8 +14,38 @@ class AuthController extends Controller
         return view('login');
     }
 
-    public function login(Request $request)
-    {
+    public function showForgotForm(){
+        return view('forgot_password');
+    }
+
+    public function processForgotPassword(Request $request) {
+        $request->validate([
+            'id' => 'required|integer|exists:pengguna,id',
+            'new_password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
+                'regex:/[0-9]/',
+            ],
+        ], [
+            'id.required' => 'ID wajib diisi',
+            'id.exists' => 'ID tidak ditemukan',
+            'new_password.required' => 'Password baru wajib diisi',
+            'new_password.min' => 'Password minimal 8 karakter',
+            'new_password.regex' => 'Password harus mengandung huruf besar, huruf kecil, dan angka',
+        ]);
+
+        $user = \App\Models\Pengguna::find($request->id);
+        $user->password = bcrypt($request->new_password);
+        $user->password_expires_at = now()->addMonths(3);
+        $user->save();
+
+        return redirect('/')->with('success', 'Password berhasil diubah. Silakan login kembali.');
+    }
+
+    public function login(Request $request){
         $key = Str::lower($request->input('id')).'|'.$request->ip();
 
         // Logging percobaan login
@@ -43,7 +73,7 @@ class AuthController extends Controller
             'password' => [
                 'required',
                 'string',
-                'min:8',
+                'min:6',
                 'regex:/[A-Z]/',
                 'regex:/[a-z]/',
                 'regex:/[0-9]/',
@@ -66,7 +96,7 @@ class AuthController extends Controller
                 'time' => now(),
             ]);
 
-            // Cek masa berlaku password
+
             if ($user->password_expires_at && now()->greaterThan($user->password_expires_at)) {
 
                 Log::warning('User login dengan password kedaluwarsa', [
@@ -79,7 +109,7 @@ class AuthController extends Controller
                 return redirect('/login')->withErrors('Password Anda telah kedaluwarsa. Silakan ubah password.');
             }
 
-            // Arahkan sesuai role
+
             if ($user->role == 'admin') {
                 return redirect()->route('dashboard_admin.index');
             } elseif ($user->role == 'operator') {
@@ -117,37 +147,5 @@ class AuthController extends Controller
 
         return redirect('/');
     }
-
-    public function showForgotForm()
-    {
-        return view('forgot_password');
-    }
-
-public function processForgotPassword(Request $request) {
-    $request->validate([
-        'id' => 'required|integer|exists:pengguna,id',
-        'new_password' => [
-            'required',
-            'string',
-            'min:8',
-            'regex:/[A-Z]/',
-            'regex:/[a-z]/',
-            'regex:/[0-9]/',
-        ],
-    ], [
-        'id.required' => 'ID wajib diisi',
-        'id.exists' => 'ID tidak ditemukan',
-        'new_password.required' => 'Password baru wajib diisi',
-        'new_password.min' => 'Password minimal 8 karakter',
-        'new_password.regex' => 'Password harus mengandung huruf besar, huruf kecil, dan angka',
-    ]);
-
-    $user = \App\Models\Pengguna::find($request->id);
-    $user->password = bcrypt($request->new_password);
-    $user->password_expires_at = now()->addMonths(3);
-    $user->save();
-
-    return redirect('/')->with('success', 'Password berhasil diubah. Silakan login kembali.');
-}
 
 }

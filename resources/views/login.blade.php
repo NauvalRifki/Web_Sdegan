@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="left-side">
-        <img src="{{ asset('images/login.png') }}" alt="Login"> <!-- Gambar logo -->
+        <img src="{{ asset('images/login.png') }}" alt="Login">
         <p class="logo-text">Sistem Deteksi Dini Gejolak Harga Pangan</p>
     </div>
     <div class="right-side">
@@ -72,7 +72,7 @@
                 alert.style.opacity = '0';
                 setTimeout(() => alert.remove(), 300);
             });
-        }, 5000);
+        }, 1000);
     </script>
     <script>
         const togglePasswordBtn = document.querySelector('.toggle-password');
