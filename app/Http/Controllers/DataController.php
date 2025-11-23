@@ -15,26 +15,10 @@ use Illuminate\Support\Facades\Log;
 class DataController extends Controller{
 
     public function index(Request $request){
-        // Log informasi tentang request
-        Log::info('Request parameters:', $request->all());
-
-        if ($request->has('search')) {
-            $searchQuery = $request->input('search');
-            // Log informasi tentang query pencarian
-            Log::info('Searching for:', ['query' => $searchQuery]);
-
-            $data = Data::where('nama_komoditas', 'LIKE', '%' . $searchQuery . '%')
-                        ->paginate(10);
-        } else {
-            // Log informasi tentang pagination default
-            Log::info('Fetching default paginated data.');
-
-            $data = Data::orderBy('created_at', 'asc')->paginate(20);
-        }
-
-        // Log jumlah data yang diambil
+        Log::info('Fetching default paginated data.');
+        $data = Data::orderBy('created_at', 'asc')->paginate(20);
         Log::info('Data retrieved:', ['count' => $data->count()]);
-
+        
         return view('dashboard_admin.sub_menu.data_pangan', ['dataKomoditas' => $data]);
     }
 
